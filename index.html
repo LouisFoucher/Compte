@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1d6f42">
+<title>Dépenses</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%B6%3C/text%3E%3C/svg%3E">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f2f5f1;
+  --paper: #ffffff;
+  --ink: #18261f;
+  --muted: #5a6a61;
+  --line: #d3dcd5;
+  --head: #e6ede7;
+  --accent: #1d6f42;
+  --accent-ink: #ffffff;
+  --ok: #1d6f42;
+  --danger: #b3261e;
+  --warn: #8a5a00;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111713;
+    --paper: #1a221d;
+    --ink: #e6eee9;
+    --muted: #98a89e;
+    --line: #2d3932;
+    --head: #222d26;
+    --accent: #4fb57e;
+    --accent-ink: #0b1f14;
+    --ok: #7fd6a5;
+    --danger: #ff9a92;
+    --warn: #f0c36a;
+  }
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+*, *::before, *::after { box-sizing: inherit; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.45 system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+main { max-width: 34rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+h1 { margin: 0; font-size: 1.7rem; line-height: 1.2; letter-spacing: -0.01em; }
+h2 { margin: 0 0 .75rem; font-size: 1.05rem; }
+.sub { margin: .25rem 0 1.25rem; color: var(--muted); font-size: .92rem; }
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+label { display: block; font-size: .875rem; font-weight: 600; color: var(--muted); }
+input[type="date"], input[type="text"] {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: .25rem;
+  padding: .55rem .7rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: .75rem; }
+.field { margin-bottom: .9rem; }
+.row2 .field { margin-bottom: 0; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button {
+  font: inherit;
+  min-height: 48px;
+  padding: .5rem .9rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:disabled { opacity: .55; cursor: not-allowed; }
+.primary {
+  width: 100%;
+  min-height: 52px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: 0;
+}
+.secondary {
+  font-weight: 600;
+  color: var(--accent);
+  background: transparent;
+  border: 1.5px solid var(--accent);
+}
+.quiet {
+  width: 100%;
+  min-height: 44px;
+  margin-top: .75rem;
+  color: var(--danger);
+  background: transparent;
+  border: 1px solid var(--line);
+}
+.link {
+  min-height: 0;
+  padding: 0 .25rem;
+  margin-left: .35rem;
+  font-size: inherit;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+}
+.msg { min-height: 1.4rem; margin: .7rem 0 0; font-size: .92rem; }
+.msg.ok { color: var(--ok); }
+.msg.error { color: var(--danger); }
+.msg.warn { color: var(--warn); }
+.banner {
+  margin: 0 0 1rem;
+  padding: .7rem .9rem;
+  font-size: .92rem;
+  color: var(--warn);
+  border: 1px solid var(--warn);
+  border-radius: 8px;
+}
+.sheet { overflow-x: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+th, td { border-right: 1px solid var(--line); }
+th:last-child, td:last-child { border-right: 0; }
+.letters th {
+  padding: .2rem 0;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+  background: var(--head);
+}
+.titles th {
+  padding: .45rem .4rem;
+  font-size: .8rem;
+  text-align: left;
+  border-bottom: 1px solid var(--ink);
+}
+td {
+  padding: .5rem .4rem;
+  vertical-align: top;
+  font-size: .9rem;
+  border-top: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+td.amount { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.amount.credit { color: var(--ok); }
+td.empty { padding: 1.1rem .8rem; color: var(--muted); text-align: center; white-space: normal; }
+tr.done td { color: var(--muted); }
+.tag { display: block; font-size: .75rem; color: var(--muted); }
+.del {
+  min-height: 40px;
+  width: 40px;
+  padding: 0;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+}
+.del:hover { color: var(--danger); }
+.summary { margin: .6rem 0 0; color: var(--muted); font-size: .92rem; }
+.ledger { margin-bottom: 1.25rem; }
+.check { display: flex; align-items: center; gap: .6rem; min-height: 44px; margin: .25rem 0 .5rem; font-weight: 400; color: var(--ink); }
+.check input { width: 22px; height: 22px; accent-color: var(--accent); }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+#fallback {
+  display: block;
+  width: 100%;
+  height: 6rem;
+  margin-top: .75rem;
+  padding: .5rem;
+  font: .85rem ui-monospace, Consolas, monospace;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.lbl { margin-bottom: .25rem; font-size: .875rem; font-weight: 600; color: var(--muted); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.seg label { position: relative; margin: 0; }
+.seg input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.seg span {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: .4rem .6rem;
+  font-weight: 600; font-size: .95rem; text-align: center;
+  color: var(--ink); background: var(--bg);
+  border: 1.5px solid var(--line); border-radius: 8px;
+}
+.seg input:checked + span { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+.seg input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+.hint { margin: .5rem 0 1rem; color: var(--muted); font-size: .9rem; }
+.wide { width: 100%; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Dépenses</h1>
+  <p class="sub">Les dépenses restent sur cet appareil tant que tu ne les exportes pas.</p>
+
+  <p id="storageWarn" class="banner" hidden>Le stockage du navigateur est indisponible : les dépenses ne seront pas conservées. Ouvre cette page dans Chrome, hors navigation privée.</p>
+
+  <form id="form" class="card" novalidate>
+    <div class="field">
+      <div id="typeLabel" class="lbl">Type</div>
+      <div class="seg" role="radiogroup" aria-labelledby="typeLabel">
+        <label><input type="radio" name="type" value="debit" checked><span>Débit (dépense)</span></label>
+        <label><input type="radio" name="type" value="credit"><span>Crédit (entrée)</span></label>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="date">Date</label>
+        <input id="date" type="date" required>
+      </div>
+      <div class="field">
+        <label for="amount">Montant en euros</label>
+        <input id="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" required>
+      </div>
+    </div>
+    <div class="field">
+      <label for="label">Commerce ou motif</label>
+      <input id="label" type="text" maxlength="120" autocomplete="off" required>
+    </div>
+    <button id="save" class="primary" type="submit">Enregistrer</button>
+    <p id="msg" class="msg" role="status" aria-live="polite"></p>
+  </form>
+
+  <section class="ledger" aria-labelledby="ledgerTitle">
+    <h2 id="ledgerTitle">Dépenses enregistrées</h2>
+    <div class="sheet">
+      <table>
+        <colgroup>
+          <col style="width:4.9rem">
+          <col>
+          <col style="width:6.2rem">
+          <col style="width:2.75rem">
+        </colgroup>
+        <thead>
+          <tr class="titles"><th scope="col">Date</th><th scope="col">Désignation</th><th scope="col">Montant</th><th scope="col"></th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p id="summary" class="summary"></p>
+  </section>
+
+  <section class="card" aria-labelledby="exportTitle">
+    <h2 id="exportTitle">Vers Excel</h2>
+    <button id="xlsx" class="secondary wide" type="button">Fichier Excel complet</button>
+    <p class="hint">Contient toutes les lignes enregistrées, avec une feuille par mois et les colonnes Date, Désignation, Crédit, Débit.</p>
+    <button id="copy" class="secondary wide" type="button">Copier les cellules</button>
+    <label class="check"><input id="inclAll" type="checkbox"> Inclure celles déjà copiées</label>
+    <p id="exportMsg" class="msg" role="status" aria-live="polite"></p>
+    <textarea id="fallback" readonly hidden aria-label="Texte à copier"></textarea>
+    <button id="purge" class="quiet" type="button" hidden>Vider les dépenses déjà copiées</button>
+  </section>
+</main>
+
+<script>
+(() => {
+'use strict';
+
+const KEY = 'depenses:v1';
+const $ = (id) => document.getElementById(id);
+
+// ---XLSX-START---
+const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+
+function crc32(bytes) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+function zipStore(files) {
+  const enc = new TextEncoder();
+  const chunks = [];
+  const central = [];
+  let offset = 0;
+  for (const f of files) {
+    const name = enc.encode(f.name);
+    const data = enc.encode(f.data);
+    const crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true);
+    lh.setUint16(4, 20, true);
+    lh.setUint16(6, 0x0800, true);
+    lh.setUint16(8, 0, true);
+    lh.setUint16(10, 0, true);
+    lh.setUint16(12, 33, true);
+    lh.setUint32(14, crc, true);
+    lh.setUint32(18, data.length, true);
+    lh.setUint32(22, data.length, true);
+    lh.setUint16(26, name.length, true);
+    lh.setUint16(28, 0, true);
+    chunks.push(new Uint8Array(lh.buffer), name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true);
+    ch.setUint16(4, 20, true);
+    ch.setUint16(6, 20, true);
+    ch.setUint16(8, 0x0800, true);
+    ch.setUint16(10, 0, true);
+    ch.setUint16(12, 0, true);
+    ch.setUint16(14, 33, true);
+    ch.setUint32(16, crc, true);
+    ch.setUint32(20, data.length, true);
+    ch.setUint32(24, data.length, true);
+    ch.setUint16(28, name.length, true);
+    ch.setUint16(30, 0, true);
+    ch.setUint16(32, 0, true);
+    ch.setUint16(34, 0, true);
+    ch.setUint16(36, 0, true);
+    ch.setUint32(38, 0, true);
+    ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), name);
+    offset += 30 + name.length + data.length;
+  }
+  const cdSize = central.reduce((s, c) => s + c.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true);
+  end.setUint16(4, 0, true);
+  end.setUint16(6, 0, true);
+  end.setUint16(8, files.length, true);
+  end.setUint16(10, files.length, true);
+  end.setUint32(12, cdSize, true);
+  end.setUint32(16, offset, true);
+  end.setUint16(20, 0, true);
+  return new Blob([...chunks, ...central, new Uint8Array(end.buffer)], { type: XLSX_MIME });
+}
+
+function xmlEsc(s) {
+  return String(s)
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function excelSerial(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(1899, 11, 30)) / 86400000);
+}
+
+function cellText(ref, text, style) {
+  const s = style ? ` s="${style}"` : '';
+  return `<c r="${ref}"${s} t="inlineStr"><is><t xml:space="preserve">${xmlEsc(text)}</t></is></c>`;
+}
+
+function monthTitle(key, withYear) {
+  const [y, m] = key.split('-').map(Number);
+  let name = new Date(y, m - 1, 1).toLocaleDateString('fr-FR', { month: 'long' });
+  name = name.charAt(0).toUpperCase() + name.slice(1);
+  return withYear ? `${name} ${y}` : name;
+}
+
+function sheetXml(items, head, NS) {
+  let rows = '<row r="1">' + cellText('A1', 'Date', 3) + cellText('B1', 'Désignation', 3) + cellText('C1', 'Crédit', 3) + cellText('D1', 'Débit', 3) + '</row>';
+  items.forEach((e, i) => {
+    const r = i + 2;
+    const col = e.type === 'credit' ? 'C' : 'D';
+    rows += `<row r="${r}"><c r="A${r}" s="1"><v>${excelSerial(e.date)}</v></c>${cellText('B' + r, e.label)}<c r="${col}${r}" s="2"><v>${e.amount}</v></c></row>`;
+  });
+  return head + `<worksheet xmlns="${NS}">` +
+    '<cols><col min="1" max="1" width="14" customWidth="1"/><col min="2" max="2" width="36" customWidth="1"/><col min="3" max="4" width="14" customWidth="1"/></cols>' +
+    `<sheetData>${rows}</sheetData></worksheet>`;
+}
+
+function buildXlsx(list) {
+  const NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+  const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const PKG = 'http://schemas.openxmlformats.org/package/2006/relationships';
+  const head = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+
+  const years = new Set(list.map((e) => e.date.slice(0, 4)));
+  const groups = new Map();
+  for (const e of list) {
+    const k = e.date.slice(0, 7);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(e);
+  }
+  let sheets = [...groups.keys()].sort().map((k) => ({ name: monthTitle(k, years.size > 1), items: groups.get(k) }));
+  if (!sheets.length) sheets = [{ name: 'Dépenses', items: [] }];
+
+  const styles = head + `<styleSheet xmlns="${NS}">` +
+    '<numFmts count="2"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/><numFmt numFmtId="165" formatCode="#,##0.00\\ &quot;€&quot;"/></numFmts>' +
+    '<fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts>' +
+    '<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>' +
+    '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+    '<cellXfs count="4">' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+    '<xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>' +
+    '<xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>' +
+    '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    '</cellXfs>' +
+    '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+
+  const overrides = sheets.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('');
+  const sheetTags = sheets.map((sh, i) => `<sheet name="${xmlEsc(sh.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('');
+  const sheetRels = sheets.map((_, i) => `<Relationship Id="rId${i + 1}" Type="${REL}/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join('');
+
+  return zipStore([
+    { name: '[Content_Types].xml', data: head + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' + overrides + '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>' },
+    { name: '_rels/.rels', data: head + `<Relationships xmlns="${PKG}"><Relationship Id="rId1" Type="${REL}/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+    { name: 'xl/workbook.xml', data: head + `<workbook xmlns="${NS}" xmlns:r="${REL}"><sheets>${sheetTags}</sheets></workbook>` },
+    { name: 'xl/_rels/workbook.xml.rels', data: head + `<Relationships xmlns="${PKG}">${sheetRels}<Relationship Id="rId${sheets.length + 1}" Type="${REL}/styles" Target="styles.xml"/></Relationships>` },
+    { name: 'xl/styles.xml', data: styles },
+    ...sheets.map((sh, i) => ({ name: `xl/worksheets/sheet${i + 1}.xml`, data: sheetXml(sh.items, head, NS) }))
+  ]);
+}
+// ---XLSX-END---
+
+const el = {
+  form: $('form'), date: $('date'), amount: $('amount'), label: $('label'), save: $('save'), msg: $('msg'),
+  rows: $('rows'), summary: $('summary'), inclAll: $('inclAll'),
+  copy: $('copy'), xlsx: $('xlsx'), exportMsg: $('exportMsg'), fallback: $('fallback'), purge: $('purge'),
+  warn: $('storageWarn')
+};
+
+let storageOk = true;
+try {
+  localStorage.setItem('depenses:test', '1');
+  localStorage.removeItem('depenses:test');
+} catch (_) { storageOk = false; }
+
+function load() {
+  let raw = null;
+  try {
+    raw = localStorage.getItem(KEY);
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data)) throw new Error('format');
+    return data
+      .filter((e) => e && typeof e.id === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(e.date) && Number.isFinite(e.amount) && typeof e.label === 'string')
+      .map((e) => ({ id: e.id, date: e.date, amount: e.amount, label: e.label, type: e.type === 'credit' ? 'credit' : 'debit', exported: !!e.exported, ts: Number(e.ts) || 0 }));
+  } catch (_) {
+    // Données illisibles : on garde une copie de sauvegarde avant toute réécriture.
+    try { if (raw) localStorage.setItem(KEY + ':sauvegarde', raw); } catch (__) { /* ignoré */ }
+    return [];
+  }
+}
+
+let entries = load();
+
+function persist() {
+  try {
+    const json = JSON.stringify(entries);
+    localStorage.setItem(KEY, json);
+    return localStorage.getItem(KEY) === json;
+  } catch (_) {
+    return false;
+  }
+}
+
+const eur = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+const pad = (n) => String(n).padStart(2, '0');
+
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+function isoToFR(iso) { const [y, m, d] = iso.split('-'); return `${d}/${m}/${y}`; }
+function isoToShort(iso) { const [y, m, d] = iso.split('-'); return `${d}/${m}/${y.slice(2)}`; }
+function newId() {
+  try { if (crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (_) { /* repli */ }
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
+function parseAmount(s) {
+  const t = String(s).replace(/[\s\u00a0€]/g, '').replace(',', '.');
+  if (!/^\d+(\.\d{1,2})?$/.test(t)) return null;
+  const n = Number(t);
+  return n > 0 ? Math.round(n * 100) / 100 : null;
+}
+
+function say(node, text, type, actionLabel, action) {
+  node.className = 'msg' + (type ? ' ' + type : '');
+  node.textContent = text;
+  if (actionLabel && action) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'link';
+    b.textContent = actionLabel;
+    b.addEventListener('click', action);
+    node.appendChild(b);
+  }
+}
+
+function sorted() {
+  return [...entries].sort((a, b) => a.date.localeCompare(b.date) || a.ts - b.ts);
+}
+function selection() {
+  const all = sorted();
+  return el.inclAll.checked ? all : all.filter((e) => !e.exported);
+}
+
+function render() {
+  const all = sorted();
+  const pending = all.filter((e) => !e.exported);
+  const done = all.length - pending.length;
+
+  el.rows.textContent = '';
+  if (!all.length) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.colSpan = 4;
+    td.className = 'empty';
+    td.textContent = 'Aucune dépense enregistrée. Ajoute la première ci-dessus.';
+    tr.appendChild(td);
+    el.rows.appendChild(tr);
+  }
+  for (const e of all) {
+    const tr = document.createElement('tr');
+    if (e.exported) tr.className = 'done';
+    const tdDate = document.createElement('td');
+    tdDate.textContent = isoToShort(e.date);
+    const tdAmount = document.createElement('td');
+    const isCredit = e.type === 'credit';
+    tdAmount.className = 'amount' + (isCredit ? ' credit' : '');
+    tdAmount.textContent = (isCredit ? '+' : '−') + eur.format(e.amount);
+    tdAmount.setAttribute('aria-label', (isCredit ? 'Crédit ' : 'Débit ') + eur.format(e.amount));
+    const tdLabel = document.createElement('td');
+    tdLabel.textContent = e.label;
+    if (e.exported) {
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.textContent = 'déjà copiée';
+      tdLabel.appendChild(tag);
+    }
+    const tdAct = document.createElement('td');
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'del';
+    del.textContent = '×';
+    del.setAttribute('aria-label', `Supprimer la dépense ${e.label}`);
+    del.addEventListener('click', () => removeEntry(e.id));
+    tdAct.appendChild(del);
+    tr.append(tdDate, tdLabel, tdAmount, tdAct);
+    el.rows.appendChild(tr);
+  }
+
+  const debits = all.filter((e) => e.type !== 'credit').reduce((s, e) => s + e.amount, 0);
+  const credits = all.filter((e) => e.type === 'credit').reduce((s, e) => s + e.amount, 0);
+  el.summary.textContent = all.length
+    ? `${all.length} ligne${all.length > 1 ? 's' : ''} : débits ${eur.format(debits)}, crédits ${eur.format(credits)}. ${pending.length} à copier.`
+    : '';
+
+  const n = selection().length;
+  el.copy.textContent = 'Copier les cellules' + (n ? ` (${n})` : '');
+  el.copy.disabled = n === 0;
+  el.xlsx.disabled = all.length === 0;
+  el.purge.hidden = done === 0;
+}
+
+let busy = false;
+let lastAdd = { key: '', at: 0 };
+let prefilled = todayISO();
+
+function fail(text, field) {
+  say(el.msg, text, 'error');
+  if (field) field.focus();
+}
+
+el.form.addEventListener('submit', (ev) => {
+  ev.preventDefault();
+  if (busy) return;
+  const date = el.date.value;
+  const amount = parseAmount(el.amount.value);
+  const label = el.label.value.replace(/\s+/g, ' ').trim();
+  const typeInput = document.querySelector('input[name="type"]:checked');
+  const type = typeInput && typeInput.value === 'credit' ? 'credit' : 'debit';
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return fail('Choisis une date.', el.date);
+  if (amount === null) return fail('Saisis un montant supérieur à 0, par exemple 12,50.', el.amount);
+  if (!label) return fail('Indique le commerce ou le motif.', el.label);
+
+  const key = `${date}|${type}|${amount}|${label}`;
+  const now = Date.now();
+  if (key === lastAdd.key && now - lastAdd.at < 3000) {
+    say(el.msg, 'Cette dépense vient d’être enregistrée.', 'warn');
+    return;
+  }
+
+  busy = true;
+  el.save.disabled = true;
+  const entry = { id: newId(), date, amount, label, type, exported: false, ts: now };
+  entries.push(entry);
+  if (persist()) {
+    lastAdd = { key, at: now };
+    say(el.msg, `Enregistrée : ${label}, ${eur.format(amount)} en ${type === 'credit' ? 'crédit' : 'débit'}.`, 'ok');
+    el.amount.value = '';
+    el.label.value = '';
+    const debitInput = document.querySelector('input[name="type"][value="debit"]');
+    if (debitInput) debitInput.checked = true;
+    render();
+    el.amount.focus();
+  } else {
+    entries.pop();
+    say(el.msg, 'Échec : le stockage du navigateur est indisponible ou plein. La dépense n’a pas été enregistrée.', 'error');
+  }
+  setTimeout(() => { busy = false; el.save.disabled = false; }, 600);
+});
+
+function removeEntry(id) {
+  const idx = entries.findIndex((e) => e.id === id);
+  if (idx < 0) return;
+  const e = entries[idx];
+  if (!confirm(`Supprimer « ${e.label} » (${eur.format(e.amount)}) ?`)) return;
+  entries.splice(idx, 1);
+  if (!persist()) {
+    entries.splice(idx, 0, e);
+    say(el.msg, 'Échec de la suppression : le stockage du navigateur est indisponible.', 'error');
+    return;
+  }
+  render();
+  say(el.msg, 'Dépense supprimée.', 'ok');
+}
+
+function markExported(ids) {
+  entries.forEach((e) => { if (ids.includes(e.id)) e.exported = true; });
+  if (!persist()) say(el.exportMsg, 'Les dépenses n’ont pas pu être marquées comme copiées (stockage indisponible).', 'warn');
+  render();
+}
+function undoExport(ids) {
+  entries.forEach((e) => { if (ids.includes(e.id)) e.exported = false; });
+  persist();
+  render();
+  say(el.exportMsg, 'Copie annulée : ces dépenses sont de nouveau à copier.', 'ok');
+}
+
+function safeCell(text) {
+  const t = text.replace(/[\t\r\n]+/g, ' ');
+  return /^[=+\-@]/.test(t) ? ' ' + t : t;
+}
+
+function legacyCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+el.copy.addEventListener('click', async () => {
+  const sel = selection();
+  if (!sel.length) return;
+  const text = sel
+    .map((e) => [isoToFR(e.date), safeCell(e.label), e.type === 'credit' ? e.amount.toFixed(2).replace('.', ',') : '', e.type === 'credit' ? '' : e.amount.toFixed(2).replace('.', ',')].join('\t'))
+    .join('\n');
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch (_) { ok = legacyCopy(text); }
+  if (!ok) {
+    el.fallback.hidden = false;
+    el.fallback.value = text;
+    el.fallback.focus();
+    el.fallback.select();
+    say(el.exportMsg, 'La copie automatique a échoué. Copie le texte ci-dessous à la main.', 'error');
+    return;
+  }
+  el.fallback.hidden = true;
+  const ids = sel.map((e) => e.id);
+  markExported(ids);
+  say(el.exportMsg, `${ids.length} ligne${ids.length > 1 ? 's copiées' : ' copiée'}. Colle dans la colonne A, sur la première ligne vide.`, 'ok', 'Annuler', () => undoExport(ids));
+});
+
+function download(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+el.xlsx.addEventListener('click', async () => {
+  const all = sorted();
+  if (!all.length) return;
+  const name = `depenses-${todayISO()}.xlsx`;
+  let blob;
+  try {
+    blob = buildXlsx(all);
+  } catch (_) {
+    say(el.exportMsg, 'Impossible de créer le fichier Excel.', 'error');
+    return;
+  }
+  const mobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  if (mobile && navigator.canShare && typeof File === 'function') {
+    try {
+      const file = new File([blob], name, { type: XLSX_MIME });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: name });
+        say(el.exportMsg, `${name} partagé.`, 'ok');
+        return;
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') {
+        say(el.exportMsg, 'Partage annulé.', 'warn');
+        return;
+      }
+      // Autre erreur : on bascule sur le téléchargement classique.
+    }
+  }
+  download(blob, name);
+  say(el.exportMsg, `${name} téléchargé.`, 'ok');
+});
+
+el.purge.addEventListener('click', () => {
+  const n = entries.filter((e) => e.exported).length;
+  if (!n) return;
+  if (!confirm(`Supprimer définitivement les ${n} dépense${n > 1 ? 's' : ''} déjà copiée${n > 1 ? 's' : ''} ? Elles ne seront plus dans le fichier Excel complet.`)) return;
+  const backup = entries;
+  entries = entries.filter((e) => !e.exported);
+  if (!persist()) {
+    entries = backup;
+    say(el.exportMsg, 'Échec : le stockage du navigateur est indisponible.', 'error');
+    return;
+  }
+  render();
+  say(el.exportMsg, 'Dépenses copiées supprimées.', 'ok');
+});
+
+el.inclAll.addEventListener('change', render);
+
+window.addEventListener('storage', (e) => {
+  if (e.key === KEY) { entries = load(); render(); }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  const today = todayISO();
+  if (el.date.value === prefilled && today !== prefilled) {
+    el.date.value = today;
+    prefilled = today;
+  }
+});
+
+// Initialisation
+el.date.value = prefilled;
+el.warn.hidden = storageOk;
+render();
+})();
+</script>
+</body>
+</html>
