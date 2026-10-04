@@ -98,14 +98,6 @@ button:disabled { opacity: .55; cursor: not-allowed; }
   background: transparent;
   border: 1.5px solid var(--accent);
 }
-.quiet {
-  width: 100%;
-  min-height: 44px;
-  margin-top: .75rem;
-  color: var(--danger);
-  background: transparent;
-  border: 1px solid var(--line);
-}
 .link {
   min-height: 0;
   padding: 0 .25rem;
@@ -156,8 +148,6 @@ td {
 td.amount { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 td.amount.credit { color: var(--ok); }
 td.empty { padding: 1.1rem .8rem; color: var(--muted); text-align: center; white-space: normal; }
-tr.done td { color: var(--muted); }
-.tag { display: block; font-size: .75rem; color: var(--muted); }
 .del {
   min-height: 40px;
   width: 40px;
@@ -171,21 +161,6 @@ tr.done td { color: var(--muted); }
 .del:hover { color: var(--danger); }
 .summary { margin: .6rem 0 0; color: var(--muted); font-size: .92rem; }
 .ledger { margin-bottom: 1.25rem; }
-.check { display: flex; align-items: center; gap: .6rem; min-height: 44px; margin: .25rem 0 .5rem; font-weight: 400; color: var(--ink); }
-.check input { width: 22px; height: 22px; accent-color: var(--accent); }
-.actions { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
-#fallback {
-  display: block;
-  width: 100%;
-  height: 6rem;
-  margin-top: .75rem;
-  padding: .5rem;
-  font: .85rem ui-monospace, Consolas, monospace;
-  color: var(--ink);
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
 .lbl { margin-bottom: .25rem; font-size: .875rem; font-weight: 600; color: var(--muted); }
 .seg { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
 .seg label { position: relative; margin: 0; }
@@ -199,8 +174,7 @@ tr.done td { color: var(--muted); }
 }
 .seg input:checked + span { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
 .seg input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
-.hint { margin: .5rem 0 1rem; color: var(--muted); font-size: .9rem; }
-.wide { width: 100%; }
+.hint { margin: 0 0 .9rem; color: var(--muted); font-size: .9rem; }
 [hidden] { display: none !important; }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 </style>
@@ -258,14 +232,10 @@ tr.done td { color: var(--muted); }
   </section>
 
   <section class="card" aria-labelledby="exportTitle">
-    <h2 id="exportTitle">Vers Excel</h2>
-    <button id="xlsx" class="secondary wide" type="button">Fichier Excel complet</button>
+    <h2 id="exportTitle">Fichier Excel</h2>
     <p class="hint">Contient toutes les lignes enregistrées, avec une feuille par mois et les colonnes Date, Désignation, Crédit, Débit.</p>
-    <button id="copy" class="secondary wide" type="button">Copier les cellules</button>
-    <label class="check"><input id="inclAll" type="checkbox"> Inclure celles déjà copiées</label>
+    <button id="xlsx" class="primary" type="button">Fichier Excel complet</button>
     <p id="exportMsg" class="msg" role="status" aria-live="polite"></p>
-    <textarea id="fallback" readonly hidden aria-label="Texte à copier"></textarea>
-    <button id="purge" class="quiet" type="button" hidden>Vider les dépenses déjà copiées</button>
   </section>
 </main>
 
@@ -436,8 +406,8 @@ function buildXlsx(list) {
 
 const el = {
   form: $('form'), date: $('date'), amount: $('amount'), label: $('label'), save: $('save'), msg: $('msg'),
-  rows: $('rows'), summary: $('summary'), inclAll: $('inclAll'),
-  copy: $('copy'), xlsx: $('xlsx'), exportMsg: $('exportMsg'), fallback: $('fallback'), purge: $('purge'),
+  rows: $('rows'), summary: $('summary'),
+  xlsx: $('xlsx'), exportMsg: $('exportMsg'),
   warn: $('storageWarn')
 };
 
@@ -456,7 +426,7 @@ function load() {
     if (!Array.isArray(data)) throw new Error('format');
     return data
       .filter((e) => e && typeof e.id === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(e.date) && Number.isFinite(e.amount) && typeof e.label === 'string')
-      .map((e) => ({ id: e.id, date: e.date, amount: e.amount, label: e.label, type: e.type === 'credit' ? 'credit' : 'debit', exported: !!e.exported, ts: Number(e.ts) || 0 }));
+      .map((e) => ({ id: e.id, date: e.date, amount: e.amount, label: e.label, type: e.type === 'credit' ? 'credit' : 'debit', ts: Number(e.ts) || 0 }));
   } catch (_) {
     // Données illisibles : on garde une copie de sauvegarde avant toute réécriture.
     try { if (raw) localStorage.setItem(KEY + ':sauvegarde', raw); } catch (__) { /* ignoré */ }
@@ -513,15 +483,9 @@ function say(node, text, type, actionLabel, action) {
 function sorted() {
   return [...entries].sort((a, b) => a.date.localeCompare(b.date) || a.ts - b.ts);
 }
-function selection() {
-  const all = sorted();
-  return el.inclAll.checked ? all : all.filter((e) => !e.exported);
-}
 
 function render() {
   const all = sorted();
-  const pending = all.filter((e) => !e.exported);
-  const done = all.length - pending.length;
 
   el.rows.textContent = '';
   if (!all.length) {
@@ -535,7 +499,6 @@ function render() {
   }
   for (const e of all) {
     const tr = document.createElement('tr');
-    if (e.exported) tr.className = 'done';
     const tdDate = document.createElement('td');
     tdDate.textContent = isoToShort(e.date);
     const tdAmount = document.createElement('td');
@@ -545,12 +508,6 @@ function render() {
     tdAmount.setAttribute('aria-label', (isCredit ? 'Crédit ' : 'Débit ') + eur.format(e.amount));
     const tdLabel = document.createElement('td');
     tdLabel.textContent = e.label;
-    if (e.exported) {
-      const tag = document.createElement('span');
-      tag.className = 'tag';
-      tag.textContent = 'déjà copiée';
-      tdLabel.appendChild(tag);
-    }
     const tdAct = document.createElement('td');
     const del = document.createElement('button');
     del.type = 'button';
@@ -566,14 +523,10 @@ function render() {
   const debits = all.filter((e) => e.type !== 'credit').reduce((s, e) => s + e.amount, 0);
   const credits = all.filter((e) => e.type === 'credit').reduce((s, e) => s + e.amount, 0);
   el.summary.textContent = all.length
-    ? `${all.length} ligne${all.length > 1 ? 's' : ''} : débits ${eur.format(debits)}, crédits ${eur.format(credits)}. ${pending.length} à copier.`
+    ? `${all.length} ligne${all.length > 1 ? 's' : ''} : débits ${eur.format(debits)}, crédits ${eur.format(credits)}.`
     : '';
 
-  const n = selection().length;
-  el.copy.textContent = 'Copier les cellules' + (n ? ` (${n})` : '');
-  el.copy.disabled = n === 0;
   el.xlsx.disabled = all.length === 0;
-  el.purge.hidden = done === 0;
 }
 
 let busy = false;
@@ -607,7 +560,7 @@ el.form.addEventListener('submit', (ev) => {
 
   busy = true;
   el.save.disabled = true;
-  const entry = { id: newId(), date, amount, label, type, exported: false, ts: now };
+  const entry = { id: newId(), date, amount, label, type, ts: now };
   entries.push(entry);
   if (persist()) {
     lastAdd = { key, at: now };
@@ -639,59 +592,6 @@ function removeEntry(id) {
   render();
   say(el.msg, 'Dépense supprimée.', 'ok');
 }
-
-function markExported(ids) {
-  entries.forEach((e) => { if (ids.includes(e.id)) e.exported = true; });
-  if (!persist()) say(el.exportMsg, 'Les dépenses n’ont pas pu être marquées comme copiées (stockage indisponible).', 'warn');
-  render();
-}
-function undoExport(ids) {
-  entries.forEach((e) => { if (ids.includes(e.id)) e.exported = false; });
-  persist();
-  render();
-  say(el.exportMsg, 'Copie annulée : ces dépenses sont de nouveau à copier.', 'ok');
-}
-
-function safeCell(text) {
-  const t = text.replace(/[\t\r\n]+/g, ' ');
-  return /^[=+\-@]/.test(t) ? ' ' + t : t;
-}
-
-function legacyCopy(text) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.setAttribute('readonly', '');
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
-  document.body.appendChild(ta);
-  ta.select();
-  let ok = false;
-  try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
-  document.body.removeChild(ta);
-  return ok;
-}
-
-el.copy.addEventListener('click', async () => {
-  const sel = selection();
-  if (!sel.length) return;
-  const text = sel
-    .map((e) => [isoToFR(e.date), safeCell(e.label), e.type === 'credit' ? e.amount.toFixed(2).replace('.', ',') : '', e.type === 'credit' ? '' : e.amount.toFixed(2).replace('.', ',')].join('\t'))
-    .join('\n');
-  let ok = false;
-  try { await navigator.clipboard.writeText(text); ok = true; } catch (_) { ok = legacyCopy(text); }
-  if (!ok) {
-    el.fallback.hidden = false;
-    el.fallback.value = text;
-    el.fallback.focus();
-    el.fallback.select();
-    say(el.exportMsg, 'La copie automatique a échoué. Copie le texte ci-dessous à la main.', 'error');
-    return;
-  }
-  el.fallback.hidden = true;
-  const ids = sel.map((e) => e.id);
-  markExported(ids);
-  say(el.exportMsg, `${ids.length} ligne${ids.length > 1 ? 's copiées' : ' copiée'}. Colle dans la colonne A, sur la première ligne vide.`, 'ok', 'Annuler', () => undoExport(ids));
-});
 
 function download(blob, name) {
   const url = URL.createObjectURL(blob);
@@ -735,23 +635,6 @@ el.xlsx.addEventListener('click', async () => {
   download(blob, name);
   say(el.exportMsg, `${name} téléchargé.`, 'ok');
 });
-
-el.purge.addEventListener('click', () => {
-  const n = entries.filter((e) => e.exported).length;
-  if (!n) return;
-  if (!confirm(`Supprimer définitivement les ${n} dépense${n > 1 ? 's' : ''} déjà copiée${n > 1 ? 's' : ''} ? Elles ne seront plus dans le fichier Excel complet.`)) return;
-  const backup = entries;
-  entries = entries.filter((e) => !e.exported);
-  if (!persist()) {
-    entries = backup;
-    say(el.exportMsg, 'Échec : le stockage du navigateur est indisponible.', 'error');
-    return;
-  }
-  render();
-  say(el.exportMsg, 'Dépenses copiées supprimées.', 'ok');
-});
-
-el.inclAll.addEventListener('change', render);
 
 window.addEventListener('storage', (e) => {
   if (e.key === KEY) { entries = load(); render(); }
