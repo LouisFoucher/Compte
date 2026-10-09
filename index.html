@@ -281,8 +281,6 @@ td.empty {
 <body>
 <main>
   <h1>COMPTES</h1><br>
-  <button id="connectGoogle" class="primary" type="button">Connecter Google Sheets</button>
-  <p id="connectionMsg" class="msg" role="status" aria-live="polite">Connecte ton compte Google pour charger tes opérations.</p>
   <form id="form" class="card" novalidate>
     <div class="field"><div id="typeLabel" class="lbl">Type</div><div class="seg" role="radiogroup" aria-labelledby="typeLabel"><label><input type="radio" name="type" value="debit" checked><span>Débit</span></label><label><input type="radio" name="type" value="credit"><span>Crédit</span></label></div></div>
     <div class="row2"><div class="field"><label for="date">Date</label><input id="date" type="date" required></div><div class="field"><label for="amount">Montant en euros</label><input id="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" required></div></div>
@@ -305,7 +303,7 @@ const SHEET_RANGE = 'A:D';
 
 const $ = id => document.getElementById(id);
 
-const el = {form:$('form'),date:$('date'),amount:$('amount'),label:$('label'),save:$('save'),msg:$('msg'),rows:$('rows'),summary:$('summary'),xlsx:$('xlsx'),exportMsg:$('exportMsg'),connect:$('connectGoogle'),connectionMsg:$('connectionMsg')};
+const el = {form:$('form'),date:$('date'),amount:$('amount'),label:$('label'),save:$('save'),msg:$('msg'),rows:$('rows'),summary:$('summary'),xlsx:$('xlsx'),exportMsg:$('exportMsg')};
 
 const eur = new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'});
 
@@ -320,7 +318,8 @@ function parseAmount(s){const t=String(s).replace(/[\s\u00a0€]/g,'').replace('
 if(!/^\d+(\.\d{1,2})?$/.test(t))return null;
 const n=Number(t);
 return n>0?Math.round(n*100)/100:null}
-function say(node,text,type){node.className='msg'+(type?' '+type:'');
+function say(node,text,type){if(!node)return;
+node.className='msg'+(type?' '+type:'');
 node.textContent=text}
 function sorted(){return [...entries].sort((a,b)=>a.date.localeCompare(b.date)||a.ts-b.ts)}
 function apiUrl(path){return `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}${path}`}
@@ -368,19 +367,18 @@ function setupGoogleConnection(){
       if(response.error||!response.access_token){
         accessToken=null;
         el.save.disabled=true;
-        say(el.connectionMsg,wasSilent?'Connexion automatique impossible sur cet appareil. Appuie sur le bouton pour autoriser Google Sheets.':'Connexion Google impossible. Réessaie.','warn');
+        say(el.msg,wasSilent?'La connexion automatique à Google a échoué. Recharge la page pour réessayer.':'Connexion Google impossible. Recharge la page pour réessayer.','error');
         return;
       }
       accessToken=response.access_token;
       try{
         await initializeSheet();
-        say(el.connectionMsg,'Google Sheets est connecté. Les données sont chargées depuis ta feuille.','ok');
-        el.connect.textContent='Reconnecter Google Sheets';
+        say(el.msg,'Connexion réussie. Les données sont chargées.','ok');
         el.save.disabled=false;
       }catch(error){
         accessToken=null;
         el.save.disabled=true;
-        say(el.connectionMsg,error.message,'error');
+        say(el.msg,error.message,'error');
       }
     }
   });
@@ -388,22 +386,12 @@ function setupGoogleConnection(){
   return true;
 
 }
-function connectGoogle(){
-  if(!setupGoogleConnection()){
-    say(el.connectionMsg,'Google est encore en cours de chargement. Réessaie dans quelques secondes.','warn');
-
-    return;
-
-  }
-  tokenClient.requestAccessToken({prompt:'consent'});
-
-}
 function trySilentConnection(){
   if(!setupGoogleConnection())return false;
 
   silentConnectionAttempt=true;
 
-  say(el.connectionMsg,'Tentative de connexion automatique à Google Sheets…');
+  
 
   tokenClient.requestAccessToken({prompt:''});
 
@@ -419,7 +407,7 @@ function waitForGoogleIdentity(attempt=0){
     return;
 
   }
-  say(el.connectionMsg,'Google ne s’est pas chargé. Vérifie ta connexion Internet ou réessaie.','error');
+  say(el.msg,'Google ne s’est pas chargé. Vérifie ta connexion Internet puis recharge la page.','error');
 
 }
 // 5. Affichage des opérations
@@ -428,7 +416,7 @@ el.rows.textContent='';
 if(!all.length){const tr=document.createElement('tr'),td=document.createElement('td');
 td.colSpan=4;
 td.className='empty';
-td.textContent=accessToken?'Aucune opération enregistrée. Ajoute la première ci-dessus.':'Connecte Google Sheets pour afficher tes opérations.';
+td.textContent=accessToken?'Aucune opération enregistrée. Ajoute la première ci-dessus.':'Chargement des opérations…';
 tr.appendChild(td);
 el.rows.appendChild(tr)}for(const e of all){const tr=document.createElement('tr'),tdDate=document.createElement('td'),tdLabel=document.createElement('td'),tdAmount=document.createElement('td'),tdAct=document.createElement('td'),del=document.createElement('button');
 tdDate.textContent=isoToShort(e.date);
@@ -449,9 +437,8 @@ el.xlsx.disabled=!all.length}
 function fail(text,field){say(el.msg,text,'error');
 if(field)field.focus()}
 // 6. Ajout et suppression des opérations
-el.connect.addEventListener('click',connectGoogle);
 
-el.form.addEventListener('submit',async ev=>{ev.preventDefault();if(busy)return;if(!accessToken){say(el.msg,'Connecte d’abord Google Sheets.','error');return}const date=el.date.value,amount=parseAmount(el.amount.value),label=el.label.value.replace(/\s+/g,' ').trim(),type=document.querySelector('input[name="type"]:checked')?.value==='credit'?'credit':'debit';if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return fail('Choisis une date.',el.date);if(amount===null)return fail('Saisis un montant supérieur à 0, par exemple 12,50.',el.amount);if(!label)return fail('Indique le commerce ou le motif.',el.label);const key=`${date}|${type}|${amount}|${label}`,now=Date.now();if(key===lastAdd.key&&now-lastAdd.at<3000){say(el.msg,'Cette opération vient d’être enregistrée.','warn');return}busy=true;el.save.disabled=true;try{const row=[date,label,type==='credit'?amount:'',type==='debit'?amount:''];await sheetsRequest(`/values/${encodeURIComponent('A:D')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({values:[row]})});lastAdd={key,at:now};await loadEntries();say(el.msg,`Enregistrée : ${label}, ${eur.format(amount)} en ${type==='credit'?'crédit':'débit'}.`,'ok');el.amount.value='';el.label.value='';document.querySelector('input[name="type"][value="debit"]').checked=true;el.amount.focus()}catch(error){say(el.msg,`Échec de l’enregistrement : ${error.message}`,'error')}finally{busy=false;el.save.disabled=!accessToken}});
+el.form.addEventListener('submit',async ev=>{ev.preventDefault();if(busy)return;if(!accessToken){say(el.msg,'La connexion Google est en cours. Attends quelques secondes ou recharge la page.','error');return}const date=el.date.value,amount=parseAmount(el.amount.value),label=el.label.value.replace(/\s+/g,' ').trim(),type=document.querySelector('input[name="type"]:checked')?.value==='credit'?'credit':'debit';if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return fail('Choisis une date.',el.date);if(amount===null)return fail('Saisis un montant supérieur à 0, par exemple 12,50.',el.amount);if(!label)return fail('Indique le commerce ou le motif.',el.label);const key=`${date}|${type}|${amount}|${label}`,now=Date.now();if(key===lastAdd.key&&now-lastAdd.at<3000){say(el.msg,'Cette opération vient d’être enregistrée.','warn');return}busy=true;el.save.disabled=true;try{const row=[date,label,type==='credit'?amount:'',type==='debit'?amount:''];await sheetsRequest(`/values/${encodeURIComponent('A:D')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({values:[row]})});lastAdd={key,at:now};await loadEntries();say(el.msg,`Enregistrée : ${label}, ${eur.format(amount)} en ${type==='credit'?'crédit':'débit'}.`,'ok');el.amount.value='';el.label.value='';document.querySelector('input[name="type"][value="debit"]').checked=true;el.amount.focus()}catch(error){say(el.msg,`Échec de l’enregistrement : ${error.message}`,'error')}finally{busy=false;el.save.disabled=!accessToken}});
 
 async function removeEntry(id){const e=entries.find(item=>item.id===id);
 if(!e||!confirm(`Supprimer « ${e.label} » (${eur.format(e.amount)}) ?`))return;
