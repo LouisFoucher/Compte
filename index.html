@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -6,19 +6,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#1d6f42">
-
     <title>COMPTES</title>
 
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%B6%3C/text%3E%3C/svg%3E">
 
-    <!-- Bibliothèques externes -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
-        /* ========================================
-           1. VARIABLES ET THÈMES
-        ======================================== */
+        /* =========================================
+           1. COULEURS ET THÈMES
+        ========================================= */
 
         :root {
             color-scheme: light dark;
@@ -56,9 +54,9 @@
             }
         }
 
-        /* ========================================
-           2. MISE EN PAGE GÉNÉRALE
-        ======================================== */
+        /* =========================================
+           2. MISE EN PAGE
+        ========================================= */
 
         *,
         *::before,
@@ -95,12 +93,6 @@
             font-size: 1.05rem;
         }
 
-        .sub {
-            margin: .25rem 0 1.25rem;
-            color: var(--muted);
-            font-size: .92rem;
-        }
-
         .card {
             margin-bottom: 1.25rem;
             padding: 1rem;
@@ -109,9 +101,9 @@
             border-radius: 10px;
         }
 
-        /* ========================================
-           3. CHAMPS ET FORMULAIRES
-        ======================================== */
+        /* =========================================
+           3. FORMULAIRES
+        ========================================= */
 
         label {
             display: block;
@@ -203,9 +195,9 @@
             outline-offset: 2px;
         }
 
-        /* ========================================
+        /* =========================================
            4. BOUTONS ET MESSAGES
-        ======================================== */
+        ========================================= */
 
         :focus-visible {
             outline: 3px solid var(--accent);
@@ -235,13 +227,6 @@
             font-weight: 600;
         }
 
-        .secondary {
-            color: var(--accent);
-            background: transparent;
-            border: 1.5px solid var(--accent);
-            font-weight: 600;
-        }
-
         .msg {
             min-height: 1.4rem;
             margin: .7rem 0 0;
@@ -256,22 +241,13 @@
             color: var(--danger);
         }
 
-        .msg.warn,
-        .banner {
+        .msg.warn {
             color: var(--warn);
         }
 
-        .banner {
-            margin: 0 0 1rem;
-            padding: .7rem .9rem;
-            border: 1px solid var(--warn);
-            border-radius: 8px;
-            font-size: .92rem;
-        }
-
-        /* ========================================
+        /* =========================================
            5. TABLEAU DES OPÉRATIONS
-        ======================================== */
+        ========================================= */
 
         .ledger {
             margin-bottom: 1.25rem;
@@ -362,9 +338,7 @@
 <body>
     <main>
 
-        <!-- ====================================
-             6. EN-TÊTE ET CONNEXION GOOGLE
-        ===================================== -->
+        <!-- EN-TÊTE ET CONNEXION GOOGLE -->
 
         <h1>COMPTES</h1>
         <br>
@@ -377,9 +351,7 @@
             Connecte ton compte Google pour charger tes opérations.
         </p>
 
-        <!-- ====================================
-             7. FORMULAIRE D'AJOUT
-        ===================================== -->
+        <!-- FORMULAIRE D'AJOUT -->
 
         <form id="form" class="card" novalidate>
 
@@ -436,9 +408,7 @@
             <p id="msg" class="msg" role="status" aria-live="polite"></p>
         </form>
 
-        <!-- ====================================
-             8. LISTE DES OPÉRATIONS
-        ===================================== -->
+        <!-- LISTE DES OPÉRATIONS -->
 
         <section class="ledger" aria-labelledby="ledgerTitle">
             <h2 id="ledgerTitle">Dépenses enregistrées</h2>
@@ -468,9 +438,7 @@
             <p id="summary" class="summary"></p>
         </section>
 
-        <!-- ====================================
-             9. EXPORT EXCEL
-        ===================================== -->
+        <!-- EXPORT EXCEL -->
 
         <section class="card" aria-labelledby="exportTitle">
             <h2 id="exportTitle">Fichier Excel</h2>
@@ -488,8 +456,8 @@
         (() => {
             'use strict';
 
-            /* ====================================
-               10. CONFIGURATION
+            /* =====================================
+               1. CONFIGURATION
             ===================================== */
 
             const CLIENT_ID =
@@ -499,6 +467,8 @@
                 '1jXUwsyEzV6T1CgPJQ2rKkya_d1EslBjBNEkZovEj-Do';
 
             const SHEET_RANGE = 'A:D';
+
+            const AUTH_KEY = 'comptesGoogleAuthorized';
 
             const $ = id => document.getElementById(id);
 
@@ -517,8 +487,8 @@
                 connectionMsg: $('connectionMsg')
             };
 
-            /* ====================================
-               11. VARIABLES DE FONCTIONNEMENT
+            /* =====================================
+               2. VARIABLES
             ===================================== */
 
             const eur = new Intl.NumberFormat('fr-FR', {
@@ -531,22 +501,23 @@
             let tokenClient = null;
             let sheetId = null;
             let busy = false;
+            let silentConnectionAttempt = false;
 
             let lastAdd = {
                 key: '',
                 at: 0
             };
 
-            /* ====================================
-               12. FONCTIONS UTILITAIRES
+            /* =====================================
+               3. FONCTIONS UTILITAIRES
             ===================================== */
 
             function todayISO() {
-                const d = new Date();
+                const date = new Date();
 
-                return `${d.getFullYear()}-${
-                    String(d.getMonth() + 1).padStart(2, '0')
-                }-${String(d.getDate()).padStart(2, '0')}`;
+                return `${date.getFullYear()}-${
+                    String(date.getMonth() + 1).padStart(2, '0')
+                }-${String(date.getDate()).padStart(2, '0')}`;
             }
 
             function isoToShort(iso) {
@@ -571,19 +542,21 @@
                     : null;
             }
 
-            function say(node, text, type) {
-                node.className = 'msg' + (type ? ' ' + type : '');
+            function say(node, text, type = '') {
+                node.className = 'msg' + (type ? ` ${type}` : '');
                 node.textContent = text;
             }
 
             function sorted() {
                 return [...entries].sort(
-                    (a, b) => a.date.localeCompare(b.date) || a.ts - b.ts
+                    (a, b) =>
+                        a.date.localeCompare(b.date) ||
+                        a.ts - b.ts
                 );
             }
 
-            /* ====================================
-               13. COMMUNICATION AVEC GOOGLE SHEETS
+            /* =====================================
+               4. REQUÊTES GOOGLE SHEETS
             ===================================== */
 
             function apiUrl(path) {
@@ -625,6 +598,10 @@
 
                 return body;
             }
+
+            /* =====================================
+               5. INITIALISER ET LIRE LA FEUILLE
+            ===================================== */
 
             async function initializeSheet() {
                 const metadata = await sheetsRequest(
@@ -745,72 +722,127 @@
                 render();
             }
 
-            /* ====================================
-               14. CONNEXION AU COMPTE GOOGLE
+            /* =====================================
+               6. CONNEXION GOOGLE
             ===================================== */
 
-            function connectGoogle() {
+            function setupGoogleConnection() {
                 if (!window.google?.accounts?.oauth2) {
                     say(
                         el.connectionMsg,
-                        'Le service Google ne s’est pas chargé. Actualise la page puis réessaie.',
+                        'Google ne s’est pas chargé. Actualise la page puis réessaie.',
                         'error'
+                    );
+
+                    return false;
+                }
+
+                if (tokenClient) {
+                    return true;
+                }
+
+                tokenClient = google.accounts.oauth2.initTokenClient({
+                    client_id: CLIENT_ID,
+
+                    scope: 'https://www.googleapis.com/auth/spreadsheets',
+
+                    callback: async response => {
+                        const wasSilent = silentConnectionAttempt;
+                        silentConnectionAttempt = false;
+
+                        if (response.error) {
+                            accessToken = null;
+                            el.save.disabled = true;
+
+                            // Si l'essai automatique échoue, le prochain
+                            // clic demandera une autorisation interactive.
+                            if (wasSilent || response.error) {
+                                localStorage.removeItem(AUTH_KEY);
+                            }
+
+                            say(
+                                el.connectionMsg,
+                                wasSilent
+                                    ? 'Connexion automatique impossible. Clique sur le bouton pour te connecter.'
+                                    : 'Connexion Google impossible. Réessaie.',
+                                'warn'
+                            );
+
+                            return;
+                        }
+
+                        accessToken = response.access_token;
+
+                        try {
+                            await initializeSheet();
+
+                            localStorage.setItem(AUTH_KEY, 'true');
+
+                            say(
+                                el.connectionMsg,
+                                'Google Sheets est connecté. Tes opérations sont chargées.',
+                                'ok'
+                            );
+
+                            el.connect.textContent = 'Reconnecter Google Sheets';
+                            el.save.disabled = false;
+
+                        } catch (error) {
+                            say(
+                                el.connectionMsg,
+                                error.message,
+                                'error'
+                            );
+                        }
+                    }
+                });
+
+                return true;
+            }
+
+            // Connexion manuelle, notamment lors de la première utilisation.
+            function connectGoogle() {
+                if (!setupGoogleConnection()) {
+                    return;
+                }
+
+                const previouslyAuthorized =
+                    localStorage.getItem(AUTH_KEY) === 'true';
+
+                tokenClient.requestAccessToken({
+                    prompt: previouslyAuthorized ? '' : 'consent'
+                });
+            }
+
+            // Tentative automatique après une autorisation antérieure.
+            function trySilentConnection() {
+                if (localStorage.getItem(AUTH_KEY) !== 'true') {
+                    say(
+                        el.connectionMsg,
+                        'Connecte ton compte Google pour charger tes opérations.'
                     );
 
                     return;
                 }
 
-                if (!tokenClient) {
-                    tokenClient = google.accounts.oauth2.initTokenClient({
-                        client_id: CLIENT_ID,
-
-                        scope: 'https://www.googleapis.com/auth/spreadsheets',
-
-                        callback: async response => {
-                            if (response.error) {
-                                say(
-                                    el.connectionMsg,
-                                    'Connexion refusée par Google.',
-                                    'error'
-                                );
-
-                                return;
-                            }
-
-                            accessToken = response.access_token;
-
-                            try {
-                                await initializeSheet();
-
-                                say(
-                                    el.connectionMsg,
-                                    'Google Sheets est connecté. Les données sont chargées depuis ta feuille.',
-                                    'ok'
-                                );
-
-                                el.connect.textContent =
-                                    'Reconnecter Google Sheets';
-
-                                el.save.disabled = false;
-
-                            } catch (error) {
-                                say(
-                                    el.connectionMsg,
-                                    error.message,
-                                    'error'
-                                );
-                            }
-                        }
-                    });
+                if (!setupGoogleConnection()) {
+                    return;
                 }
 
+                silentConnectionAttempt = true;
+
+                say(
+                    el.connectionMsg,
+                    'Tentative de connexion automatique à Google Sheets…'
+                );
+
                 tokenClient.requestAccessToken({
-                    prompt: accessToken ? '' : 'consent'
+                    prompt: ''
                 });
             }
 
-            /* ====================================
-               15. AFFICHAGE DES OPÉRATIONS
+            /* =====================================
+               7. AFFICHER LES OPÉRATIONS
             ===================================== */
 
             function render() {
@@ -839,14 +871,15 @@
                     const tdDate = document.createElement('td');
                     const tdLabel = document.createElement('td');
                     const tdAmount = document.createElement('td');
-                    const tdAct = document.createElement('td');
+                    const tdAction = document.createElement('td');
                     const del = document.createElement('button');
 
                     tdDate.textContent = isoToShort(entry.date);
                     tdLabel.textContent = entry.label;
 
                     tdAmount.className =
-                        'amount' + (entry.type === 'credit' ? ' credit' : '');
+                        'amount' +
+                        (entry.type === 'credit' ? ' credit' : '');
 
                     tdAmount.textContent =
                         (entry.type === 'credit' ? '+' : '−') +
@@ -872,9 +905,9 @@
                         () => removeEntry(entry.id)
                     );
 
-                    tdAct.appendChild(del);
+                    tdAction.appendChild(del);
 
-                    tr.append(tdDate, tdLabel, tdAmount, tdAct);
+                    tr.append(tdDate, tdLabel, tdAmount, tdAction);
                     el.rows.appendChild(tr);
                 }
 
@@ -895,21 +928,17 @@
                 el.xlsx.disabled = !all.length;
             }
 
-            /* ====================================
-               16. VALIDATION DU FORMULAIRE
+            /* =====================================
+               8. AJOUTER UNE OPÉRATION
             ===================================== */
 
-            function fail(text, field) {
-                say(el.msg, text, 'error');
+            function fail(message, field) {
+                say(el.msg, message, 'error');
 
                 if (field) {
                     field.focus();
                 }
             }
-
-            /* ====================================
-               17. AJOUT D'UNE OPÉRATION
-            ===================================== */
 
             el.form.addEventListener('submit', async event => {
                 event.preventDefault();
@@ -963,10 +992,7 @@
                 const key = `${date}|${type}|${amount}|${label}`;
                 const now = Date.now();
 
-                if (
-                    key === lastAdd.key &&
-                    now - lastAdd.at < 3000
-                ) {
+                if (key === lastAdd.key && now - lastAdd.at < 3000) {
                     say(
                         el.msg,
                         'Cette opération vient d’être enregistrée.',
@@ -1033,8 +1059,8 @@
                 }
             });
 
-            /* ====================================
-               18. SUPPRESSION D'UNE OPÉRATION
+            /* =====================================
+               9. SUPPRIMER UNE OPÉRATION
             ===================================== */
 
             async function removeEntry(id) {
@@ -1083,8 +1109,8 @@
                 }
             }
 
-            /* ====================================
-               19. EXPORT EXCEL
+            /* =====================================
+               10. EXPORT EXCEL
             ===================================== */
 
             el.xlsx.addEventListener('click', () => {
@@ -1179,8 +1205,8 @@
                 }
             });
 
-            /* ====================================
-               20. INITIALISATION DE LA PAGE
+            /* =====================================
+               11. DÉMARRAGE DE L'APPLICATION
             ===================================== */
 
             el.connect.addEventListener('click', connectGoogle);
@@ -1190,9 +1216,12 @@
 
             render();
 
+            // Au chargement, tente la connexion automatique
+            // uniquement si Google avait déjà été autorisé.
+            window.addEventListener('load', trySilentConnection);
+
         })();
     </script>
 </body>
 
 </html>
-```
