@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,1041 +6,466 @@
 <meta name="theme-color" content="#1d6f42">
 <title>COMPTES</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%B6%3C/text%3E%3C/svg%3E">
-
 <style>
 :root {
-  color-scheme: light dark;
-  --bg: #f2f5f1;
-  --paper: #fff;
-  --ink: #18261f;
-  --muted: #5a6a61;
-  --line: #d3dcd5;
-  --head: #e6ede7;
-  --accent: #1d6f42;
-  --accent-ink: #fff;
-  --ok: #1d6f42;
-  --danger: #b3261e;
-  --warn: #8a5a00;
-  box-sizing: border-box;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme:light dark;
+  --bg:#f2f5f1;
+  --paper:#fff;
+  --ink:#18261f;
+  --muted:#5a6a61;
+  --line:#d3dcd5;
+  --head:#e6ede7;
+  --accent:#1d6f42;
+  --accent-ink:#fff;
+  --ok:#1d6f42;
+  --danger:#b3261e;
+  --warn:#8a5a00;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
 }
-
-@media (prefers-color-scheme: dark) {
+@media(prefers-color-scheme:dark) {
   :root {
-    --bg: #111713;
-    --paper: #1a221d;
-    --ink: #e6eee9;
-    --muted: #98a89e;
-    --line: #2d3932;
-    --head: #222d26;
-    --accent: #4fb57e;
-    --accent-ink: #0b1f14;
-    --ok: #7fd6a5;
-    --danger: #ff9a92;
-    --warn: #f0c36a;
+    --bg:#111713;
+    --paper:#1a221d;
+    --ink:#e6eee9;
+    --muted:#98a89e;
+    --line:#2d3932;
+    --head:#222d26;
+    --accent:#4fb57e;
+    --accent-ink:#0b1f14;
+    --ok:#7fd6a5;
+    --danger:#ff9a92;
+    --warn:#f0c36a;
   }
 }
-
 html {
-  scroll-padding-top: env(safe-area-inset-top, 0px);
+  scroll-padding-top:env(safe-area-inset-top,0px);
 }
-
-*, *::before, *::after {
-  box-sizing: inherit;
+*,*::before,*::after {
+  box-sizing:inherit;
 }
-
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font: 16px/1.45 system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:16px/1.45 system-ui,"Segoe UI",Roboto,Arial,sans-serif;
 }
-
 main {
-  max-width: 34rem;
-  margin: 0 auto;
-  padding: 1.25rem 1rem 3rem;
+  max-width:34rem;
+  margin:0 auto;
+  padding:1.25rem 1rem 3rem;
 }
-
 h1 {
-  margin: 0;
-  font-size: 1.7rem;
-  line-height: 1.2;
-  text-align: center;
+  margin:0;
+  font-size:1.7rem;
+  line-height:1.2;
+  text-align:center;
 }
-
 h2 {
-  margin: 0 0 .75rem;
-  font-size: 1.05rem;
+  margin:0 0 .75rem;
+  font-size:1.05rem;
 }
-
 .sub {
-  margin: .25rem 0 1.25rem;
-  color: var(--muted);
-  font-size: .92rem;
+  margin:.25rem 0 1.25rem;
+  color:var(--muted);
+  font-size:.92rem;
 }
-
 .card {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 1.25rem;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:1rem;
+  margin-bottom:1.25rem;
 }
-
 label {
-  display: block;
-  font-size: .875rem;
-  font-weight: 600;
-  color: var(--muted);
+  display:block;
+  font-size:.875rem;
+  font-weight:600;
+  color:var(--muted);
 }
-
-input[type=date],
-input[type=text] {
-  display: block;
-  width: 100%;
-  min-height: 48px;
-  margin-top: .25rem;
-  padding: .55rem .7rem;
-  font: inherit;
-  color: var(--ink);
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 8px;
+input[type=date],input[type=text] {
+  display:block;
+  width:100%;
+  min-height:48px;
+  margin-top:.25rem;
+  padding:.55rem .7rem;
+  font:inherit;
+  color:var(--ink);
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:8px;
 }
-
 .row2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: .75rem;
-  margin-bottom: .75rem;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.75rem;
+  margin-bottom:.75rem;
 }
-
 .field {
-  margin-bottom: .9rem;
+  margin-bottom:.9rem;
 }
-
 .row2 .field {
-  margin-bottom: 0;
+  margin-bottom:0;
 }
-
 :focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
+  outline:3px solid var(--accent);
+  outline-offset:2px;
 }
-
 button {
-  font: inherit;
-  min-height: 48px;
-  padding: .5rem .9rem;
-  border-radius: 8px;
-  cursor: pointer;
+  font:inherit;
+  min-height:48px;
+  padding:.5rem .9rem;
+  border-radius:8px;
+  cursor:pointer;
 }
-
 button:disabled {
-  opacity: .55;
-  cursor: not-allowed;
+  opacity:.55;
+  cursor:not-allowed;
 }
-
 .primary {
-  width: 100%;
-  min-height: 52px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--accent-ink);
-  background: var(--accent);
-  border: 0;
+  width:100%;
+  min-height:52px;
+  font-size:1.05rem;
+  font-weight:600;
+  color:var(--accent-ink);
+  background:var(--accent);
+  border:0;
 }
-
 .secondary {
-  font-weight: 600;
-  color: var(--accent);
-  background: transparent;
-  border: 1.5px solid var(--accent);
+  font-weight:600;
+  color:var(--accent);
+  background:transparent;
+  border:1.5px solid var(--accent);
 }
-
 .msg {
-  min-height: 1.4rem;
-  margin: .7rem 0 0;
-  font-size: .92rem;
+  min-height:1.4rem;
+  margin:.7rem 0 0;
+  font-size:.92rem;
 }
-
 .msg.ok {
-  color: var(--ok);
+  color:var(--ok);
 }
-
 .msg.error {
-  color: var(--danger);
+  color:var(--danger);
 }
-
-.msg.warn,
+.msg.warn,.banner {
+  color:var(--warn);
+}
 .banner {
-  color: var(--warn);
+  margin:0 0 1rem;
+  padding:.7rem .9rem;
+  font-size:.92rem;
+  border:1px solid var(--warn);
+  border-radius:8px;
 }
-
-.banner {
-  margin: 0 0 1rem;
-  padding: .7rem .9rem;
-  font-size: .92rem;
-  border: 1px solid var(--warn);
-  border-radius: 8px;
-}
-
 .sheet {
-  overflow-x: auto;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  overflow-x:auto;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:10px;
 }
-
 table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
 }
-
-th, td {
-  border-right: 1px solid var(--line);
+th,td {
+  border-right:1px solid var(--line);
 }
-
-th:last-child, td:last-child {
-  border-right: 0;
+th:last-child,td:last-child {
+  border-right:0;
 }
-
 .titles th {
-  padding: .45rem .4rem;
-  font-size: .8rem;
-  text-align: left;
-  border-bottom: 1px solid var(--ink);
-  background: var(--head);
+  padding:.45rem .4rem;
+  font-size:.8rem;
+  text-align:left;
+  border-bottom:1px solid var(--ink);
+  background:var(--head);
 }
-
 td {
-  padding: .5rem .4rem;
-  vertical-align: top;
-  font-size: .9rem;
-  border-top: 1px solid var(--line);
-  overflow-wrap: anywhere;
+  padding:.5rem .4rem;
+  vertical-align:top;
+  font-size:.9rem;
+  border-top:1px solid var(--line);
+  overflow-wrap:anywhere;
 }
-
 td.amount {
-  text-align: right;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
+  text-align:right;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
 }
-
 td.amount.credit {
-  color: var(--ok);
+  color:var(--ok);
 }
-
 td.empty {
-  padding: 1.1rem .8rem;
-  color: var(--muted);
-  text-align: center;
+  padding:1.1rem .8rem;
+  color:var(--muted);
+  text-align:center;
 }
-
 .del {
-  min-height: 40px;
-  width: 40px;
-  padding: 0;
-  font-size: 1.3rem;
-  line-height: 1;
-  color: var(--muted);
-  background: transparent;
-  border: 0;
+  min-height:40px;
+  width:40px;
+  padding:0;
+  font-size:1.3rem;
+  line-height:1;
+  color:var(--muted);
+  background:transparent;
+  border:0;
 }
-
 .del:hover {
-  color: var(--danger);
+  color:var(--danger);
 }
-
 .summary {
-  margin: .6rem 0 0;
-  color: var(--muted);
-  font-size: .92rem;
+  margin:.6rem 0 0;
+  color:var(--muted);
+  font-size:.92rem;
 }
-
 .ledger {
-  margin-bottom: 1.25rem;
+  margin-bottom:1.25rem;
 }
-
 .lbl {
-  margin-bottom: .25rem;
-  font-size: .875rem;
-  font-weight: 600;
-  color: var(--muted);
+  margin-bottom:.25rem;
+  font-size:.875rem;
+  font-weight:600;
+  color:var(--muted);
 }
-
 .seg {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: .5rem;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.5rem;
 }
-
 .seg label {
-  position: relative;
-  margin: 0;
+  position:relative;
+  margin:0;
 }
-
 .seg input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: pointer;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  margin:0;
+  opacity:0;
+  cursor:pointer;
 }
-
 .seg span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: .4rem .6rem;
-  font-weight: 600;
-  font-size: .95rem;
-  text-align: center;
-  color: var(--ink);
-  background: var(--bg);
-  border: 1.5px solid var(--line);
-  border-radius: 8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  padding:.4rem .6rem;
+  font-weight:600;
+  font-size:.95rem;
+  text-align:center;
+  color:var(--ink);
+  background:var(--bg);
+  border:1.5px solid var(--line);
+  border-radius:8px;
 }
-
-.seg input:checked + span {
-  color: var(--accent-ink);
-  background: var(--accent);
-  border-color: var(--accent);
+.seg input:checked+span {
+  color:var(--accent-ink);
+  background:var(--accent);
+  border-color:var(--accent);
 }
-
-.seg input:focus-visible + span {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
+.seg input:focus-visible+span {
+  outline:3px solid var(--accent);
+  outline-offset:2px;
 }
-
 [hidden] {
-  display: none !important;
+  display:none!important;
 }
 </style>
-
 <script id="googleGsi" src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
-
 <body>
 <main>
-  <h1>COMPTES</h1>
-  <br>
-
-  <button id="connectGoogle" class="primary" type="button">
-    Connecter Google Sheets
-  </button>
-
-  <p id="connectionMsg" class="msg" role="status" aria-live="polite">
-    Connexion à Google Sheets en cours…
-  </p>
-
+  <h1>COMPTES</h1><br>
+  <button id="connectGoogle" class="primary" type="button">Connecter Google Sheets</button>
+  <p id="connectionMsg" class="msg" role="status" aria-live="polite">Connecte ton compte Google pour charger tes opérations.</p>
   <form id="form" class="card" novalidate>
-    <div class="field">
-      <div id="typeLabel" class="lbl">Type</div>
-      <div class="seg" role="radiogroup" aria-labelledby="typeLabel">
-        <label>
-          <input type="radio" name="type" value="debit" checked>
-          <span>Débit</span>
-        </label>
-        <label>
-          <input type="radio" name="type" value="credit">
-          <span>Crédit</span>
-        </label>
-      </div>
-    </div>
-
-    <div class="row2">
-      <div class="field">
-        <label for="date">Date</label>
-        <input id="date" type="date" required>
-      </div>
-      <div class="field">
-        <label for="amount">Montant en euros</label>
-        <input id="amount" type="text" inputmode="decimal"
-          autocomplete="off" placeholder="0,00" required>
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="label">Commerce ou motif</label>
-      <input id="label" type="text" maxlength="120"
-        autocomplete="off" required>
-    </div>
-
-    <button id="save" class="primary" type="submit" disabled>
-      Enregistrer
-    </button>
-    <p id="msg" class="msg" role="status" aria-live="polite"></p>
+    <div class="field"><div id="typeLabel" class="lbl">Type</div><div class="seg" role="radiogroup" aria-labelledby="typeLabel"><label><input type="radio" name="type" value="debit" checked><span>Débit</span></label><label><input type="radio" name="type" value="credit"><span>Crédit</span></label></div></div>
+    <div class="row2"><div class="field"><label for="date">Date</label><input id="date" type="date" required></div><div class="field"><label for="amount">Montant en euros</label><input id="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" required></div></div>
+    <div class="field"><label for="label">Commerce ou motif</label><input id="label" type="text" maxlength="120" autocomplete="off" required></div>
+    <button id="save" class="primary" type="submit" disabled>Enregistrer</button><p id="msg" class="msg" role="status" aria-live="polite"></p>
   </form>
-
-  <section class="ledger" aria-labelledby="ledgerTitle">
-    <h2 id="ledgerTitle">Dépenses enregistrées</h2>
-
-    <div class="sheet">
-      <table>
-        <colgroup>
-          <col style="width:4.9rem">
-          <col>
-          <col style="width:6.2rem">
-          <col style="width:2.75rem">
-        </colgroup>
-        <thead>
-          <tr class="titles">
-            <th scope="col">Date</th>
-            <th scope="col">Désignation</th>
-            <th scope="col">Montant</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
-
-    <p id="summary" class="summary"></p>
-  </section>
-
-  <section class="card" aria-labelledby="exportTitle">
-    <h2 id="exportTitle">Fichier Excel</h2>
-    <button id="xlsx" class="primary" type="button" disabled>
-      Export fichier Excel complet
-    </button>
-    <p id="exportMsg" class="msg" role="status" aria-live="polite"></p>
-  </section>
+  <section class="ledger" aria-labelledby="ledgerTitle"><h2 id="ledgerTitle">Dépenses enregistrées</h2><div class="sheet"><table><colgroup><col style="width:4.9rem"><col><col style="width:6.2rem"><col style="width:2.75rem"></colgroup><thead><tr class="titles"><th scope="col">Date</th><th scope="col">Désignation</th><th scope="col">Montant</th><th scope="col"></th></tr></thead><tbody id="rows"></tbody></table></div><p id="summary" class="summary"></p></section>
+  <section class="card" aria-labelledby="exportTitle"><h2 id="exportTitle">Fichier Excel</h2><button id="xlsx" class="primary" type="button" disabled>Export fichier Excel complet</button><p id="exportMsg" class="msg" role="status" aria-live="polite"></p></section>
 </main>
-
 <script>
 (() => {
 'use strict';
 
+// 1. Configuration
 const CLIENT_ID = '925350256437-m1nmlqrlc3q38nts4h3pakcco6v7hqre.apps.googleusercontent.com';
+
 const SPREADSHEET_ID = '1jXUwsyEzV6T1CgPJQ2rKkya_d1EslBjBNEkZovEj-Do';
+
 const SHEET_RANGE = 'A:D';
 
 const $ = id => document.getElementById(id);
 
-const el = {
-  form: $('form'),
-  date: $('date'),
-  amount: $('amount'),
-  label: $('label'),
-  save: $('save'),
-  msg: $('msg'),
-  rows: $('rows'),
-  summary: $('summary'),
-  xlsx: $('xlsx'),
-  exportMsg: $('exportMsg'),
-  connect: $('connectGoogle'),
-  connectionMsg: $('connectionMsg')
-};
+const el = {form:$('form'),date:$('date'),amount:$('amount'),label:$('label'),save:$('save'),msg:$('msg'),rows:$('rows'),summary:$('summary'),xlsx:$('xlsx'),exportMsg:$('exportMsg'),connect:$('connectGoogle'),connectionMsg:$('connectionMsg')};
 
-const eur = new Intl.NumberFormat('fr-FR', {
-  style: 'currency',
-  currency: 'EUR'
-});
+const eur = new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'});
 
-let entries = [];
-let accessToken = null;
-let tokenClient = null;
-let sheetId = null;
-let busy = false;
-let silentConnectionAttempt = false;
-let lastAdd = {key: '', at: 0};
+let entries=[], accessToken=null, tokenClient=null, sheetId=null, busy=false, silentConnectionAttempt=false, lastAdd={key:'',at:0}, prefilled=todayISO();
 
-function todayISO() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
+// 2. Fonctions utilitaires
+function todayISO(){const d=new Date();
+return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function isoToShort(iso){const [y,m,d]=iso.split('-');
+return `${d}/${m}/${y.slice(2)}`}
+function parseAmount(s){const t=String(s).replace(/[\s\u00a0€]/g,'').replace(',','.');
+if(!/^\d+(\.\d{1,2})?$/.test(t))return null;
+const n=Number(t);
+return n>0?Math.round(n*100)/100:null}
+function say(node,text,type){node.className='msg'+(type?' '+type:'');
+node.textContent=text}
+function sorted(){return [...entries].sort((a,b)=>a.date.localeCompare(b.date)||a.ts-b.ts)}
+function apiUrl(path){return `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}${path}`}
+// 3. Accès à l’API Google Sheets
+async function sheetsRequest(path,options={}){if(!accessToken)throw new Error('Connecte d’abord ton compte Google.');
+const response=await fetch(apiUrl(path),{...options,headers:{Authorization:`Bearer ${accessToken}`,'Content-Type':'application/json',...(options.headers||{})}});
+const body=await response.json().catch(()=>({}));
+if(response.status===401){accessToken=null;
+el.save.disabled=true;
+throw new Error('Autorisation expirée. Reconnecte ton compte Google.')}if(!response.ok)throw new Error(body.error?.message||`Erreur Google Sheets (${response.status}).`);
+return body}
+async function initializeSheet(){const metadata=await sheetsRequest('?fields=sheets(properties(sheetId,title,index))');
+const sheets=metadata.sheets||[];
+if(!sheets.length)throw new Error('Aucun onglet trouvé dans cette feuille.');
+sheets.sort((a,b)=>(a.properties.index||0)-(b.properties.index||0));
+sheetId=sheets[0].properties.sheetId;
+const result=await sheetsRequest(`/values/${encodeURIComponent('A1:D1')}`);
+const headers=(result.values||[])[0]||[];
+const expected=['Date','Désignation','Crédit (€)','Débit (€)'];
+if(headers.length===0){await sheetsRequest(`/values/${encodeURIComponent('A1:D1')}?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values:[expected]})})}else if(expected.some((v,i)=>String(headers[i]||'').trim()!==v)){throw new Error('Les en-têtes de la première ligne doivent être : Date, Désignation, Crédit (€), Débit (€).')}await loadEntries()}
+async function loadEntries(){const result=await sheetsRequest(`/values/${encodeURIComponent(SHEET_RANGE)}`);
+const rows=result.values||[];
+entries=[];
+for(let i=1;i<rows.length;i++){const row=rows[i]||[];
+const rawDate=String(row[0]||'').trim(),label=String(row[1]||'').trim();
+if(!rawDate||!label)continue;
+let date=rawDate;
+if(/^\d{2}\/\d{2}\/\d{4}$/.test(date)){const [d,m,y]=date.split('/');
+date=`${y}-${m}-${d}`}if(!/^\d{4}-\d{2}-\d{2}$/.test(date))continue;
+const credit=Number(String(row[2]||'0').replace(',','.'))||0,debit=Number(String(row[3]||'0').replace(',','.'))||0;
+if(credit>0)entries.push({id:String(i+1),sheetRow:i+1,date,amount:credit,label,type:'credit',ts:i});
+else if(debit>0)entries.push({id:String(i+1),sheetRow:i+1,date,amount:debit,label,type:'debit',ts:i})}render()}
+// 4. Connexion Google
+function setupGoogleConnection(){
+  if(!window.google?.accounts?.oauth2)return false;
 
-function isoToShort(iso) {
-  const [y, m, d] = iso.split('-');
-  return `${d}/${m}/${y.slice(2)}`;
-}
+  if(tokenClient)return true;
 
-function parseAmount(s) {
-  const t = String(s)
-    .replace(/[\s\u00a0€]/g, '')
-    .replace(',', '.');
-
-  if (!/^\d+(\.\d{1,2})?$/.test(t)) return null;
-
-  const n = Number(t);
-  return n > 0 ? Math.round(n * 100) / 100 : null;
-}
-
-function say(node, text, type) {
-  node.className = 'msg' + (type ? ' ' + type : '');
-  node.textContent = text;
-}
-
-function sorted() {
-  return [...entries].sort(
-    (a, b) => a.date.localeCompare(b.date) || a.ts - b.ts
-  );
-}
-
-function apiUrl(path) {
-  return `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}${path}`;
-}
-
-async function sheetsRequest(path, options = {}) {
-  if (!accessToken) {
-    throw new Error('Connecte d’abord ton compte Google.');
-  }
-
-  const response = await fetch(apiUrl(path), {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-      ...(options.headers || {})
-    }
-  });
-
-  const body = await response.json().catch(() => ({}));
-
-  if (response.status === 401) {
-    accessToken = null;
-    el.save.disabled = true;
-    throw new Error('Autorisation expirée. Reconnecte ton compte Google.');
-  }
-
-  if (!response.ok) {
-    throw new Error(
-      body.error?.message || `Erreur Google Sheets (${response.status}).`
-    );
-  }
-
-  return body;
-}
-
-async function initializeSheet() {
-  const metadata = await sheetsRequest(
-    '?fields=sheets(properties(sheetId,title,index))'
-  );
-
-  const sheets = metadata.sheets || [];
-
-  if (!sheets.length) {
-    throw new Error('Aucun onglet trouvé dans cette feuille.');
-  }
-
-  sheets.sort(
-    (a, b) => (a.properties.index || 0) - (b.properties.index || 0)
-  );
-
-  sheetId = sheets[0].properties.sheetId;
-
-  const result = await sheetsRequest(
-    `/values/${encodeURIComponent('A1:D1')}`
-  );
-
-  const headers = (result.values || [])[0] || [];
-  const expected = ['Date', 'Désignation', 'Crédit (€)', 'Débit (€)'];
-
-  if (headers.length === 0) {
-    await sheetsRequest(
-      `/values/${encodeURIComponent('A1:D1')}?valueInputOption=RAW`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({values: [expected]})
-      }
-    );
-  } else if (
-    expected.some((v, i) => String(headers[i] || '').trim() !== v)
-  ) {
-    throw new Error(
-      'Les en-têtes de la première ligne doivent être : Date, Désignation, Crédit (€), Débit (€).'
-    );
-  }
-
-  await loadEntries();
-}
-
-async function loadEntries() {
-  const result = await sheetsRequest(
-    `/values/${encodeURIComponent(SHEET_RANGE)}`
-  );
-
-  const rows = result.values || [];
-  entries = [];
-
-  for (let i = 1; i < rows.length; i++) {
-    const row = rows[i] || [];
-    const rawDate = String(row[0] || '').trim();
-    const label = String(row[1] || '').trim();
-
-    if (!rawDate || !label) continue;
-
-    let date = rawDate;
-
-    if (/^\d{2}\/\d{2}\/\d{4}$/.test(date)) {
-      const [d, m, y] = date.split('/');
-      date = `${y}-${m}-${d}`;
-    }
-
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
-
-    const credit =
-      Number(String(row[2] || '0').replace(',', '.')) || 0;
-
-    const debit =
-      Number(String(row[3] || '0').replace(',', '.')) || 0;
-
-    if (credit > 0) {
-      entries.push({
-        id: String(i + 1),
-        sheetRow: i + 1,
-        date,
-        amount: credit,
-        label,
-        type: 'credit',
-        ts: i
-      });
-    } else if (debit > 0) {
-      entries.push({
-        id: String(i + 1),
-        sheetRow: i + 1,
-        date,
-        amount: debit,
-        label,
-        type: 'debit',
-        ts: i
-      });
-    }
-  }
-
-  render();
-}
-
-/* =====================================
-   CONNEXION GOOGLE
-===================================== */
-
-function setupGoogleConnection() {
-  if (!window.google?.accounts?.oauth2) {
-    return false;
-  }
-
-  if (tokenClient) {
-    return true;
-  }
-
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: 'https://www.googleapis.com/auth/spreadsheets',
-
-    callback: async response => {
-      const wasSilent = silentConnectionAttempt;
-      silentConnectionAttempt = false;
-
-      if (response.error || !response.access_token) {
-        accessToken = null;
-        el.save.disabled = true;
-
-        say(
-          el.connectionMsg,
-          wasSilent
-            ? 'Connexion automatique impossible sur cet appareil. Appuie sur le bouton pour autoriser Google Sheets.'
-            : 'Connexion Google impossible. Réessaie.',
-          'warn'
-        );
-
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:CLIENT_ID,
+    scope:'https://www.googleapis.com/auth/spreadsheets',
+    callback:async response=>{
+      const wasSilent=silentConnectionAttempt;
+      silentConnectionAttempt=false;
+      if(response.error||!response.access_token){
+        accessToken=null;
+        el.save.disabled=true;
+        say(el.connectionMsg,wasSilent?'Connexion automatique impossible sur cet appareil. Appuie sur le bouton pour autoriser Google Sheets.':'Connexion Google impossible. Réessaie.','warn');
         return;
       }
-
-      accessToken = response.access_token;
-
-      try {
+      accessToken=response.access_token;
+      try{
         await initializeSheet();
-
-        say(
-          el.connectionMsg,
-          'Google Sheets est connecté. Les données sont chargées depuis ta feuille.',
-          'ok'
-        );
-
-        el.connect.textContent = 'Reconnecter Google Sheets';
-        el.save.disabled = false;
-
-      } catch (error) {
-        accessToken = null;
-        el.save.disabled = true;
-
-        say(el.connectionMsg, error.message, 'error');
+        say(el.connectionMsg,'Google Sheets est connecté. Les données sont chargées depuis ta feuille.','ok');
+        el.connect.textContent='Reconnecter Google Sheets';
+        el.save.disabled=false;
+      }catch(error){
+        accessToken=null;
+        el.save.disabled=true;
+        say(el.connectionMsg,error.message,'error');
       }
     }
   });
 
   return true;
-}
 
-// Connexion manuelle si Google demande une autorisation.
-function connectGoogle() {
-  if (!setupGoogleConnection()) {
-    say(
-      el.connectionMsg,
-      'Google est encore en cours de chargement. Réessaie dans quelques secondes.',
-      'warn'
-    );
+}
+function connectGoogle(){
+  if(!setupGoogleConnection()){
+    say(el.connectionMsg,'Google est encore en cours de chargement. Réessaie dans quelques secondes.','warn');
+
     return;
-  }
 
-  tokenClient.requestAccessToken({
-    prompt: 'consent'
-  });
+  }
+  tokenClient.requestAccessToken({prompt:'consent'});
+
 }
+function trySilentConnection(){
+  if(!setupGoogleConnection())return false;
 
-// Tentative de connexion automatique au chargement.
-function trySilentConnection() {
-  if (!setupGoogleConnection()) {
-    return false;
-  }
+  silentConnectionAttempt=true;
 
-  silentConnectionAttempt = true;
+  say(el.connectionMsg,'Tentative de connexion automatique à Google Sheets…');
 
-  say(
-    el.connectionMsg,
-    'Tentative de connexion automatique à Google Sheets…'
-  );
-
-  tokenClient.requestAccessToken({
-    prompt: ''
-  });
+  tokenClient.requestAccessToken({prompt:''});
 
   return true;
+
 }
+function waitForGoogleIdentity(attempt=0){
+  if(trySilentConnection())return;
 
-// Attend le chargement du script Google avant de tenter la connexion.
-function waitForGoogleIdentity(attempt = 0) {
-  if (trySilentConnection()) {
-    return;
-  }
-
-  if (attempt < 40) {
-    window.setTimeout(() => {
-      waitForGoogleIdentity(attempt + 1);
-    }, 250);
+  if(attempt<40){
+    window.setTimeout(()=>waitForGoogleIdentity(attempt+1),250);
 
     return;
-  }
 
-  say(
-    el.connectionMsg,
-    'Google ne s’est pas chargé. Vérifie ta connexion Internet ou réessaie.',
-    'error'
-  );
+  }
+  say(el.connectionMsg,'Google ne s’est pas chargé. Vérifie ta connexion Internet ou réessaie.','error');
+
 }
-
-/* =====================================
-   AFFICHAGE DES OPÉRATIONS
-===================================== */
-
-function render() {
-  const all = sorted();
-  el.rows.textContent = '';
-
-  if (!all.length) {
-    const tr = document.createElement('tr');
-    const td = document.createElement('td');
-
-    td.colSpan = 4;
-    td.className = 'empty';
-    td.textContent = accessToken
-      ? 'Aucune opération enregistrée. Ajoute la première ci-dessus.'
-      : 'Connecte Google Sheets pour afficher tes opérations.';
-
-    tr.appendChild(td);
-    el.rows.appendChild(tr);
-  }
-
-  for (const e of all) {
-    const tr = document.createElement('tr');
-    const tdDate = document.createElement('td');
-    const tdLabel = document.createElement('td');
-    const tdAmount = document.createElement('td');
-    const tdAct = document.createElement('td');
-    const del = document.createElement('button');
-
-    tdDate.textContent = isoToShort(e.date);
-    tdLabel.textContent = e.label;
-
-    tdAmount.className =
-      'amount' + (e.type === 'credit' ? ' credit' : '');
-
-    tdAmount.textContent =
-      (e.type === 'credit' ? '+' : '−') + eur.format(e.amount);
-
-    tdAmount.setAttribute(
-      'aria-label',
-      (e.type === 'credit' ? 'Crédit ' : 'Débit ') + eur.format(e.amount)
-    );
-
-    del.type = 'button';
-    del.className = 'del';
-    del.textContent = '×';
-    del.setAttribute('aria-label', `Supprimer ${e.label}`);
-    del.addEventListener('click', () => removeEntry(e.id));
-
-    tdAct.appendChild(del);
-    tr.append(tdDate, tdLabel, tdAmount, tdAct);
-    el.rows.appendChild(tr);
-  }
-
-  const debits = all
-    .filter(e => e.type === 'debit')
-    .reduce((s, e) => s + e.amount, 0);
-
-  const credits = all
-    .filter(e => e.type === 'credit')
-    .reduce((s, e) => s + e.amount, 0);
-
-  el.summary.textContent = all.length
-    ? `${all.length} ligne${all.length > 1 ? 's' : ''} : débits ${eur.format(debits)}, crédits ${eur.format(credits)}.`
-    : '';
-
-  el.xlsx.disabled = !all.length;
-}
-
-function fail(text, field) {
-  say(el.msg, text, 'error');
-  if (field) field.focus();
-}
-
-/* =====================================
-   BOUTON DE CONNEXION
-===================================== */
-
-el.connect.addEventListener('click', connectGoogle);
-
-/* =====================================
-   ENREGISTREMENT D'UNE OPÉRATION
-===================================== */
-
-el.form.addEventListener('submit', async ev => {
-  ev.preventDefault();
-
-  if (busy) return;
-
-  if (!accessToken) {
-    say(el.msg, 'Connecte d’abord Google Sheets.', 'error');
-    return;
-  }
-
-  const date = el.date.value;
-  const amount = parseAmount(el.amount.value);
-  const label = el.label.value.replace(/\s+/g, ' ').trim();
-
-  const type =
-    document.querySelector('input[name="type"]:checked')?.value === 'credit'
-      ? 'credit'
-      : 'debit';
-
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return fail('Choisis une date.', el.date);
-  }
-
-  if (amount === null) {
-    return fail(
-      'Saisis un montant supérieur à 0, par exemple 12,50.',
-      el.amount
-    );
-  }
-
-  if (!label) {
-    return fail('Indique le commerce ou le motif.', el.label);
-  }
-
-  const key = `${date}|${type}|${amount}|${label}`;
-  const now = Date.now();
-
-  if (key === lastAdd.key && now - lastAdd.at < 3000) {
-    say(el.msg, 'Cette opération vient d’être enregistrée.', 'warn');
-    return;
-  }
-
-  busy = true;
-  el.save.disabled = true;
-
-  try {
-    const row = [
-      date,
-      label,
-      type === 'credit' ? amount : '',
-      type === 'debit' ? amount : ''
-    ];
-
-    await sheetsRequest(
-      `/values/${encodeURIComponent('A:D')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
-      {
-        method: 'POST',
-        body: JSON.stringify({values: [row]})
-      }
-    );
-
-    lastAdd = {key, at: now};
-
-    await loadEntries();
-
-    say(
-      el.msg,
-      `Enregistrée : ${label}, ${eur.format(amount)} en ${type === 'credit' ? 'crédit' : 'débit'}.`,
-      'ok'
-    );
-
-    el.amount.value = '';
-    el.label.value = '';
-
-    document.querySelector(
-      'input[name="type"][value="debit"]'
-    ).checked = true;
-
-    el.amount.focus();
-
-  } catch (error) {
-    say(el.msg, `Échec de l’enregistrement : ${error.message}`, 'error');
-
-  } finally {
-    busy = false;
-    el.save.disabled = !accessToken;
-  }
-});
-
-/* =====================================
-   SUPPRESSION D'UNE OPÉRATION
-===================================== */
-
-async function removeEntry(id) {
-  const e = entries.find(item => item.id === id);
-
-  if (
-    !e ||
-    !confirm(`Supprimer « ${e.label} » (${eur.format(e.amount)}) ?`)
-  ) {
-    return;
-  }
-
-  try {
-    await sheetsRequest(':batchUpdate', {
-      method: 'POST',
-      body: JSON.stringify({
-        requests: [{
-          
-          deleteDimension: {
-            range: {
-              sheetId,
-              dimension: 'ROWS',
-              startIndex: e.sheetRow - 1,
-              endIndex: e.sheetRow
-            }
-          }
-        }]
-      })
-    });
-
-    await loadEntries();
-    say(el.msg, 'Opération supprimée.', 'ok');
-
-  } catch (error) {
-    say(el.msg, `Échec de la suppression : ${error.message}`, 'error');
-  }
-}
-
-/* =====================================
-   EXPORT EXCEL
-===================================== */
-
-el.xlsx.addEventListener('click', () => {
-  const all = sorted();
-
-  if (!all.length) return;
-
-  if (!window.XLSX) {
-    say(
-      el.exportMsg,
-      'La bibliothèque Excel ne s’est pas chargée. Vérifie ta connexion Internet.',
-      'error'
-    );
-    return;
-  }
-
-  try {
-    const groups = new Map();
-
-    for (const e of all) {
-      const key = e.date.slice(0, 7);
-
-      if (!groups.has(key)) {
-        groups.set(key, []);
-      }
-
-      groups.get(key).push(e);
-    }
-
-    const wb = XLSX.utils.book_new();
-
-    for (
-      const [key, items] of
-      [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0]))
-    ) {
-      const [year, month] = key.split('-').map(Number);
-
-      const name = new Date(year, month - 1, 1)
-        .toLocaleDateString('fr-FR', {
-          month: 'long',
-          year: 'numeric'
-        })
-        .slice(0, 31);
-
-      const data = [
-        ['Date', 'Désignation', 'Crédit', 'Débit'],
-        ...items.map(e => [
-          e.date,
-          e.label,
-          e.type === 'credit' ? e.amount : '',
-          e.type === 'debit' ? e.amount : ''
-        ])
-      ];
-
-      const ws = XLSX.utils.aoa_to_sheet(data);
-
-      ws['!cols'] = [
-        {wch: 14},
-        {wch: 36},
-        {wch: 14},
-        {wch: 14}
-      ];
-
-      XLSX.utils.book_append_sheet(wb, ws, name);
-    }
-
-    XLSX.writeFile(wb, `depenses-${todayISO()}.xlsx`);
-
-    say(el.exportMsg, 'Fichier Excel téléchargé.', 'ok');
-
-  } catch (_) {
-    say(el.exportMsg, 'Impossible de créer le fichier Excel.', 'error');
-  }
-});
-
-/* =====================================
-   INITIALISATION
-===================================== */
-
-el.date.value = todayISO();
-el.save.disabled = true;
+// 5. Affichage des opérations
+function render(){const all=sorted();
+el.rows.textContent='';
+if(!all.length){const tr=document.createElement('tr'),td=document.createElement('td');
+td.colSpan=4;
+td.className='empty';
+td.textContent=accessToken?'Aucune opération enregistrée. Ajoute la première ci-dessus.':'Connecte Google Sheets pour afficher tes opérations.';
+tr.appendChild(td);
+el.rows.appendChild(tr)}for(const e of all){const tr=document.createElement('tr'),tdDate=document.createElement('td'),tdLabel=document.createElement('td'),tdAmount=document.createElement('td'),tdAct=document.createElement('td'),del=document.createElement('button');
+tdDate.textContent=isoToShort(e.date);
+tdLabel.textContent=e.label;
+tdAmount.className='amount'+(e.type==='credit'?' credit':'');
+tdAmount.textContent=(e.type==='credit'?'+':'−')+eur.format(e.amount);
+tdAmount.setAttribute('aria-label',(e.type==='credit'?'Crédit ':'Débit ')+eur.format(e.amount));
+del.type='button';
+del.className='del';
+del.textContent='×';
+del.setAttribute('aria-label',`Supprimer ${e.label}`);
+del.addEventListener('click',()=>removeEntry(e.id));
+tdAct.appendChild(del);
+tr.append(tdDate,tdLabel,tdAmount,tdAct);
+el.rows.appendChild(tr)}const debits=all.filter(e=>e.type==='debit').reduce((s,e)=>s+e.amount,0),credits=all.filter(e=>e.type==='credit').reduce((s,e)=>s+e.amount,0);
+el.summary.textContent=all.length?`${all.length} ligne${all.length>1?'s':''} : débits ${eur.format(debits)}, crédits ${eur.format(credits)}.`:'';
+el.xlsx.disabled=!all.length}
+function fail(text,field){say(el.msg,text,'error');
+if(field)field.focus()}
+// 6. Ajout et suppression des opérations
+el.connect.addEventListener('click',connectGoogle);
+
+el.form.addEventListener('submit',async ev=>{ev.preventDefault();if(busy)return;if(!accessToken){say(el.msg,'Connecte d’abord Google Sheets.','error');return}const date=el.date.value,amount=parseAmount(el.amount.value),label=el.label.value.replace(/\s+/g,' ').trim(),type=document.querySelector('input[name="type"]:checked')?.value==='credit'?'credit':'debit';if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return fail('Choisis une date.',el.date);if(amount===null)return fail('Saisis un montant supérieur à 0, par exemple 12,50.',el.amount);if(!label)return fail('Indique le commerce ou le motif.',el.label);const key=`${date}|${type}|${amount}|${label}`,now=Date.now();if(key===lastAdd.key&&now-lastAdd.at<3000){say(el.msg,'Cette opération vient d’être enregistrée.','warn');return}busy=true;el.save.disabled=true;try{const row=[date,label,type==='credit'?amount:'',type==='debit'?amount:''];await sheetsRequest(`/values/${encodeURIComponent('A:D')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({values:[row]})});lastAdd={key,at:now};await loadEntries();say(el.msg,`Enregistrée : ${label}, ${eur.format(amount)} en ${type==='credit'?'crédit':'débit'}.`,'ok');el.amount.value='';el.label.value='';document.querySelector('input[name="type"][value="debit"]').checked=true;el.amount.focus()}catch(error){say(el.msg,`Échec de l’enregistrement : ${error.message}`,'error')}finally{busy=false;el.save.disabled=!accessToken}});
+
+async function removeEntry(id){const e=entries.find(item=>item.id===id);
+if(!e||!confirm(`Supprimer « ${e.label} » (${eur.format(e.amount)}) ?`))return;
+try{await sheetsRequest(':batchUpdate',{method:'POST',body:JSON.stringify({requests:[{deleteDimension:{range:{sheetId,dimension:'ROWS',startIndex:e.sheetRow-1,endIndex:e.sheetRow}}}]})});
+await loadEntries();
+say(el.msg,'Opération supprimée.','ok')}catch(error){say(el.msg,`Échec de la suppression : ${error.message}`,'error')}}
+// 7. Export Excel
+el.xlsx.addEventListener('click',()=>{const all=sorted();if(!all.length)return;if(!window.XLSX){say(el.exportMsg,'La bibliothèque Excel ne s’est pas chargée. Vérifie ta connexion Internet.','error');return}try{const groups=new Map();for(const e of all){const key=e.date.slice(0,7);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(e)}const wb=XLSX.utils.book_new();for(const [key,items] of [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0]))){const [year,month]=key.split('-').map(Number);const name=new Date(year,month-1,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}).slice(0,31);const data=[['Date','Désignation','Crédit','Débit'],...items.map(e=>[e.date,e.label,e.type==='credit'?e.amount:'',e.type==='debit'?e.amount:''])];const ws=XLSX.utils.aoa_to_sheet(data);ws['!cols']=[{wch:14},{wch:36},{wch:14},{wch:14}];XLSX.utils.book_append_sheet(wb,ws,name)}XLSX.writeFile(wb,`depenses-${todayISO()}.xlsx`);say(el.exportMsg,'Fichier Excel téléchargé.','ok')}catch(_){say(el.exportMsg,'Impossible de créer le fichier Excel.','error')}});
+
+el.date.value=prefilled;
+el.save.disabled=true;
 render();
 
-// Attend le chargement de Google avant la connexion automatique.
-window.addEventListener('load', () => {
-  waitForGoogleIdentity();
-});
+window.addEventListener('load',()=>waitForGoogleIdentity());
 
 })();
 </script>
